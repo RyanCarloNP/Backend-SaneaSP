@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node": "^23.11.0",
+    "typescript": "^5.8.3"
+  }
+}
