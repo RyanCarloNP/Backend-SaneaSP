@@ -1,5 +1,5 @@
 import express from "express";
-import userRoutes from "./src/routes/user.routes";
+//import userRoutes from "./src/routes/user.routes";
 import tagRoutes from "./src/routes/tag.routes";
 import sintomaRoutes from "./src/routes/sintoma.routes";
 import reclamacaoRoutes from "./src/routes/reclamacao.routes";
@@ -12,9 +12,8 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/user", userRoutes);
+//app.use("/user", userRoutes);
 app.use("/tag", tagRoutes);
-app.use("/sintoma", sintomaRoutes);
 app.use("/sintoma", sintomaRoutes);
 app.use("/reclamacao", reclamacaoRoutes);
 app.use("/noticia", noticiaRoutes);
