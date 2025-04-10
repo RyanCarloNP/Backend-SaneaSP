@@ -5,12 +5,26 @@ import { listUsers } from "../controllers/user.controller";
 
 const router = express.Router();
 
-const users = [];
+const users = [{
+    id: 1,
+    nome: "Ryan Carlo Negretti Pereira",
+    telefone: "(15) 99699-9062",
+    email: "ryan@gmail.com",
+    senha: "123456",
+    cpf: "511.433.668-16",
+    cep: "18112-525",
+    rua: "Carmelina Garcia",
+    numero: 303,
+    complemento: null
+}];
 const userNotFound = { message: "Usuário não encontrado" };
 
 router.get("/:id", (req: Request, res: Response) => {
     const user = users.find((user) => { return user.id === Number(req.params.id) });
-    if (!user) return res.status(404).json({ userNotFound });
+    if (!user) {
+        res.status(404).json(userNotFound);
+        return;
+    }
     res.status(200).json(user);
 });
 

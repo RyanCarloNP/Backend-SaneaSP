@@ -7,7 +7,7 @@ export interface iUser {
     cpf: string
     cep: string,
     rua: string,
-    numero: string,
+    numero: number,
     complemento: string
 }
 
