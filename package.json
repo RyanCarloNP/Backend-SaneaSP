@@ -1,10 +1,35 @@
 {
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "BackEnd do projeto SaneaSP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node-dev --respawn --transpile-only ./app.ts"
+  },
   "dependencies": {
     "express": "^5.1.0",
     "node": "^23.11.0",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "@types/express": "^5.0.1"
-  }
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.10",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanCarloNP/Backend-SaneaSP.git"
+  },
+  "keywords": [
+    "Backend",
+    "SaneaSP"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RyanCarloNP/Backend-SaneaSP/issues"
+  },
+  "homepage": "https://github.com/RyanCarloNP/Backend-SaneaSP#readme"
 }
