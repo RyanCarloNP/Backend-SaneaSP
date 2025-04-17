@@ -11,7 +11,7 @@ const users = [
         cep: "18112-525",
         rua: "Carmelina Garcia",
         numero: 303,
-        complemento: null
+        complemento: " "
     }
 ];
 

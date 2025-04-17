@@ -15,7 +15,7 @@ const users = [{
     cep: "18112-525",
     rua: "Carmelina Garcia",
     numero: 303,
-    complemento: null
+    complemento: " "
 }];
 const userNotFound = { message: "Usuário não encontrado" };
 
@@ -28,16 +28,16 @@ router.get("/:id", (req: Request, res: Response) => {
     res.status(200).json(user);
 });
 
-router.get("/", (req: Request, res: Response) => {
+router.get("", (req: Request, res: Response) => {
     const userFilters = req.query as unknown as iUserListFilters;
     const users = listUsers(userFilters);
     res.status(200).json(users);
 });
 
-router.post("/", (req: Request, res: Response) => {
+router.post("/:id", (req: Request, res: Response) => {
     const user = req.body;
     users.push(user);
-    res.status(201).json(user);
+    res.status(201).send();
 });
 
 router.delete("/:id", (req: Request, res: Response) => {
