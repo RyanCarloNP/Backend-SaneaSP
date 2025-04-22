@@ -1,10 +1,25 @@
-import  express from "express"
-import {listarTags,criarTag, listarTag} from "../controllers/tag.controller" 
+import express from "express";
+import {
+  createTag,
+  deleteTag,
+  getTagById,
+  getTagByName,
+  getTagList,
+  updateTag,
+} from "../controllers/tag.controller";
 
-const router = express.Router()
-    
-router.get('/', listarTags)
-router.get('/:id', listarTag)
-router.post('/', criarTag)
+const router = express.Router();
 
-export default router
+router.get("/", getTagList);
+
+router.get("/:id", getTagById);
+
+router.get("/nome/:nome", getTagByName)
+
+router.post("/", createTag)
+
+router.put("/:id", updateTag);
+
+router.delete("/:id", deleteTag);
+
+export default router;
