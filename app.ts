@@ -1,4 +1,5 @@
 import express from "express";
+import cors from 'cors'
 //import userRoutes from "./src/routes/user.routes";
 import tagRoutes from "./src/routes/tag.routes";
 import sintomaRoutes from "./src/routes/sintoma.routes";
@@ -10,7 +11,7 @@ import doencaRoutes from "./src/routes/doenca.routes";
 import userRoutes from "./src/routes/user.routes";
 
 const app = express();
-
+app.use(cors()) //Habilita o CORS Cross-Origin resource sharing
 app.use(express.json());
 
 //app.use("/user", userRoutes);
