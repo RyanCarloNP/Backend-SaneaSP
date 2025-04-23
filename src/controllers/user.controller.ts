@@ -1,4 +1,4 @@
-import { iUser, iUserListFilters } from "../models/iUser";
+import { iUser, iUserListFilters } from "../interfaces/iUser.interface";
 
 const users = [
     {
