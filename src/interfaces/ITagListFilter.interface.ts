@@ -1,3 +1,4 @@
 export interface ITagListFilter{
-    nome ?: string
+    nome ?: string,
+    limit ?: number
 }

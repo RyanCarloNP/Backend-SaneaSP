@@ -58,21 +58,17 @@ router.post("/", async (req: Request, res: Response) => {
   
   const {nome} = req.body
 
-  const createdTag = await createTag(nome)
+  const result = await createTag(nome)
 
-  if(!createdTag){
-    res.status(409).json({
+  if(result.error){
+    res.status(Number(result.httpError)).json({
       "error": true,
-      "message": "Uma tag com esse nome já foi cadastrada"
+      "message": result.message
     })
     return
   }
 
-  res.status(201).json({
-    error: false,
-    message: 'Tag cadastrada com sucesso',
-    data : createdTag
-  })
+  res.status(201).json(result)
 })
 
 router.put("/:id", async (req: Request, res: Response) => {
@@ -82,30 +78,23 @@ router.put("/:id", async (req: Request, res: Response) => {
   const result = await updateTag({id, nome})
  
   if(result.error){
-    res.status(Number(result.httpError)).json({error : result.error, message : result.message})
+    res.status(Number(result.httpError)).json({error : true, message : result.message})
     return
   }
   
   res.status(200).json(result);
 });
 
-router.delete("/:id",(req: Request, res: Response) => { 
+router.delete("/:id", async (req: Request, res: Response) => { 
   const {id} = req.params;
-  const deletedTag = deleteTag(Number(id))
+  const result = await deleteTag(Number(id))
 
-  if(!deletedTag){
-    res.status(404).json({
-        error: true,
-        message: "Não foi possível encontrar uma tag com esse ID"
-    });
+  if(result.error){
+    res.status(Number(result.httpError)).json({error : true, message : result.message});
     return;
   }
 
-  res.status(200).json({
-      error: false,
-      message: "Tag excluída com sucesso",
-      data: deletedTag
-  });
+  res.status(200).json(result);
 });
 
 export default router;
