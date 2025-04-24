@@ -12,17 +12,17 @@ import { ITagListFilter } from "../interfaces/ITagListFilter.interface";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   const tagFilter = req.query as unknown as ITagListFilter
-  const foundProducts = getTagList(tagFilter);
+  const foundProducts = await getTagList(tagFilter);
   
   res.status(200).json(foundProducts)
 });
 
-router.get("/:id",(req: Request, res: Response) => { 
+router.get("/:id", async (req: Request, res: Response) => { 
   const {id} = req.params;
 
-  const tagFound = getTagById(Number(id));
+  const tagFound = await getTagById(Number(id));
 
   if(!tagFound){
     res.status(404).json({
@@ -35,9 +35,9 @@ router.get("/:id",(req: Request, res: Response) => {
   res.status(200).json(tagFound)
 });
 
-router.get("/nome/:nome",(req: Request, res: Response) => { 
+router.get("/nome/:nome", async (req: Request, res: Response) => { 
   const {nome} = req.params
-  const tagFound = getTagByName(nome)
+  const tagFound = await getTagByName(nome)
 
   if(!tagFound){
     res.status(404).json({
@@ -54,11 +54,11 @@ router.get("/nome/:nome",(req: Request, res: Response) => {
   })
 })
 
-router.post("/", (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   
   const {nome} = req.body
 
-  const createdTag = createTag(nome)
+  const createdTag = await createTag(nome)
 
   if(!createdTag){
     res.status(409).json({
@@ -75,11 +75,11 @@ router.post("/", (req: Request, res: Response) => {
   })
 })
 
-router.put("/:id", (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const {nome} = req.body;
   
-  const result = updateTag(id, nome)
+  const result = await updateTag({id, nome})
  
   if(result.error){
     res.status(Number(result.httpError)).json({error : result.error, message : result.message})
