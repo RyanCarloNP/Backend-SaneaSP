@@ -1,21 +1,28 @@
 import { ITag } from "../interfaces/ITag.interface";
 import { ITagListFilter } from "../interfaces/ITagListFilter.interface";
-import { IResponse } from "../interfaces/IResponse.interface";
+import { IApiResponse } from "../interfaces/IApiResponse.interface";
 import { HttpError } from "../enums/HttpError.enum";
 import { TagModel } from "../models/tag.model";
-import { FindOptions, Op } from "sequelize";
+import { Op } from "sequelize";
 
 let tags: ITag[] = [
   { id: 1, nome: "Esgoto" },
   { id: 2, nome: "Poluição" },
 ];
 
-export interface teste{
-  where : ITagListFilter
-}
-
 export const getTagList = async (tagFilter : ITagListFilter) : Promise<ITag[]> => {
-  const tags = await TagModel.findAll();
+  const query : any = {}
+  if(tagFilter.nome){
+    query.where = {
+      nome: {
+        [Op.like]: `%${tagFilter.nome}%`
+      }
+    };
+  }
+  if(tagFilter.limit){
+    query.limit = tagFilter.limit
+  }
+  const tags = await TagModel.findAll(query);
   return tags;
 }
 
@@ -25,19 +32,32 @@ export const getTagById = async (tagId : number) => {
 };
 
 export const getTagByName = async (nameFilter : string) => {
-  const tagFound = await TagModel.findOne({where : {nome: {[Op.like] : nameFilter}
-  }})
+  const tagFound = await TagModel.findOne({where : {nome: nameFilter}})
   return tagFound;
 }
 
-export const createTag = async (nome : string) : Promise<ITag> => {
+export const createTag = async (nome : string) : Promise<IApiResponse<ITag>> => {
+  const tagFound = await TagModel.findOne({where : {nome : {[Op.like] : `%${nome}%`}}})
+  if(tagFound){
+    return {
+      error:true,
+      message:"Já existe uma tag com esse nome",
+      httpError: HttpError.Conflict
+    }
+  }
+
   const createdTag = await TagModel.create({nome})
 
-  return createdTag;
+  return {
+    error:false,
+    message:"Tag cadastrada com sucesso",
+    data : createdTag
+  }
 };
 
-export const updateTag = async (updatedTag : ITag) : Promise<IResponse<ITag>> => {
-  const tagFound = await TagModel.findOne({where : {id: updatedTag.id}})
+export const updateTag = async (tagData : ITag) : Promise<IApiResponse<ITag>> => {
+  const tagFound = await TagModel.findOne({where : {id: tagData.id}})
+
   if(tagFound == null){
     return {
       error:true,
@@ -45,13 +65,19 @@ export const updateTag = async (updatedTag : ITag) : Promise<IResponse<ITag>> =>
       httpError: HttpError.NotFound
     }
   }
+
+  if(tagFound.nome === tagData.nome){
+    return {
+      error: true,
+      message: "O nome da tag é igual ao seu nome anterior",
+      httpError: HttpError.BadRequest
+    }
+  }
     
   const tagNameExists = await TagModel.findOne({
     where: {
-      [Op.or]: [
-        {[Op.and]: [{id : updatedTag.id}, {nome: updatedTag.nome}]},
-        {nome : {[Op.like] : updatedTag.nome}}
-      ],
+      nome : {[Op.like] : `%${tagData.nome}%`},
+      id : {[Op.ne] : tagData.id}
     }
   })
 
@@ -63,7 +89,8 @@ export const updateTag = async (updatedTag : ITag) : Promise<IResponse<ITag>> =>
     }
   }
 
-  const tag = await tagFound.update(updatedTag)
+  const updatedTag = await tagFound.update(tagData)
+
   return {
     error:false,
     message:"Tag atualizada",
@@ -71,14 +98,24 @@ export const updateTag = async (updatedTag : ITag) : Promise<IResponse<ITag>> =>
   }
 };
 
-export const deleteTag = (tagId : number) => {
-  const index = tags.findIndex((tag) => tag.id === tagId)
-
-  if (index === -1) return
-
-  const deletedTag = tags.splice(index, 1)
+export const deleteTag = async (tagId : number) : Promise<IApiResponse> => {
+  const tagFound = await TagModel.findByPk(tagId)
   
-  return deletedTag
+  if(!tagFound){
+    return {
+      message: 'Nenhuma tag foi encontrada',
+      error : true,
+      httpError : HttpError.NotFound
+    };
+  }
+
+  await tagFound.destroy();
+
+  return {
+    message: 'Tag excluída com sucesso',
+    error : false,
+    data : tagFound
+  };
 };
 
 function getNextId(){
