@@ -5,10 +5,11 @@ export interface Reclamacao{
     id : number,
     titulo: string,
     descricao: string,
-    objUsuario: number,
     data: Date,
-    objImagem : string,
-    objTag : string,
     status: StatusReclamacao,
-    endereco: IEndereco
+    pontuacao: number,
+    endereco ?: IEndereco,
+    objUsuario: number,
+    objImagem ?: string[],
+    objTag ?: string[],
 }
