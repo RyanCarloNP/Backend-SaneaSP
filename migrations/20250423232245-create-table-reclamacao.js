@@ -11,7 +11,7 @@ module.exports = {
           primaryKey:true,
           autoIncrement:true,
           allowNull:false,
-          type: DataType.NUMBER,
+          type: DataType.INTEGER,
         },
         titulo:{
           allowNull:false,
@@ -24,7 +24,44 @@ module.exports = {
         data:{
           allowNull:false,
           type:DataType.DATE()
+        },
+        status:{
+          allowNull:true,
+          type:DataType.CHAR(8)
+        },
+        cep:{
+          allowNull:true,
+          type:DataType.STRING(30)
+        },
+        cidade:{
+          allowNull:true,
+          type:DataType.STRING(30)
+        },
+        bairro:{
+          allowNull:true,
+          type:DataType.STRING(30) 
+        },
+        rua:{
+          allowNull:true,
+          type:DataType.STRING(30)
+        },
+        numero:{
+          allowNull:true,
+          type:DataType.STRING(30)
+        },
+        complemento:{
+          allowNull:true,
+          type:DataType.STRING(30)
+        },
+        pontuacao:{
+          allowNull:false,
+          type:DataType.DECIMAL(5,2)
+        },
+        id_usuario:{
+          allowNull:false,
+          type:DataType.INTEGER
         }
+        
       });
   },
 
