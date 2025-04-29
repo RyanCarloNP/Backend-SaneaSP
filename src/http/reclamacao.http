@@ -1,0 +1,40 @@
+// API REST de Municipios
+@baseURL = http://localhost:3000/reclamacao
+@id = 2
+
+###
+// GET 
+GET {{baseURL}}
+Content-Type: application/json
+
+###
+// GET - By id
+GET {{baseURL}}/{{id}}
+Content-Type: application/json
+
+###
+//POST
+POST {{baseURL}}
+Content-Type: application/json
+
+{
+    "id": 1,
+    "titulo": "Falta de abastecimento de água",
+    "descricao": "Há três dias o bairro está sem água, afetando diversas famílias. A situação está insustentável, pois as pessoas não conseguem realizar atividades básicas como cozinhar, tomar banho ou lavar roupas. Entramos em contato com a companhia de saneamento, mas até agora não houve retorno sobre o motivo da interrupção ou previsão de normalização.",
+    "objUsuario" : "1",
+    "status" : 1
+}
+
+###
+//PUT
+PUT {{baseURL}}/{{id}}
+Content-Type: application/json
+
+{
+    "nome": "GATO"
+}
+
+###
+//DELETE
+DELETE {{baseURL}}/{{id}}
+Content-Type: application/json
