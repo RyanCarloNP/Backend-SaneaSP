@@ -4,7 +4,7 @@
 
 ###
 // GET 
-GET {{baseURL}}?name=c
+GET {{baseURL}}
 Content-Type: application/json
 
 ###

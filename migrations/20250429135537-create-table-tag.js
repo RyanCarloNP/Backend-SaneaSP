@@ -24,3 +24,4 @@ module.exports = {
     await queryInterface.dropTable('tag');
   }
 };
+	

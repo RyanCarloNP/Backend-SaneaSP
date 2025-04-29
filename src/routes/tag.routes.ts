@@ -13,10 +13,19 @@ import { ITagListFilter } from "../interfaces/ITagListFilter.interface";
 const router = express.Router();
 
 router.get("/", async (req: Request, res: Response) => {
-  const tagFilter = req.query as unknown as ITagListFilter
-  const foundProducts = await getTagList(tagFilter);
+  try{
+    const tagFilter = req.query as unknown as ITagListFilter
+    const foundProducts = await getTagList(tagFilter);
   
-  res.status(200).json(foundProducts)
+    res.status(200).json(foundProducts)
+  } catch(error){
+    console.log(`Ocorreu um erro de servidor ${error} `)
+    res.status(500).json({
+      error:true,
+      message: `Ocorreu um erro de servidor ${error} `
+    })
+  }
+  
 });
 
 router.get("/:id", async (req: Request, res: Response) => { 
@@ -31,7 +40,6 @@ router.get("/:id", async (req: Request, res: Response) => {
     })
     return
   }
-
   res.status(200).json(tagFound)
 });
 
@@ -55,7 +63,7 @@ router.get("/nome/:nome", async (req: Request, res: Response) => {
 })
 
 router.post("/", async (req: Request, res: Response) => {
-  
+
   const {nome} = req.body
 
   const result = await createTag(nome)
@@ -74,14 +82,14 @@ router.post("/", async (req: Request, res: Response) => {
 router.put("/:id", async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const {nome} = req.body;
-  
+
   const result = await updateTag({id, nome})
- 
+
   if(result.error){
     res.status(Number(result.httpError)).json({error : true, message : result.message})
     return
   }
-  
+
   res.status(200).json(result);
 });
 
