@@ -1,4 +1,4 @@
-import { iUser, iUserListFilters } from "../models/iUser";
+import { iUser, iUserListFilters } from "../interfaces/iUser.interface";
 
 const users = [
     {
@@ -11,7 +11,7 @@ const users = [
         cep: "18112-525",
         rua: "Carmelina Garcia",
         numero: 303,
-        complemento: null
+        complemento: " "
     }
 ];
 
