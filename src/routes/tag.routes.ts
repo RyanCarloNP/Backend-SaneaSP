@@ -12,17 +12,26 @@ import { ITagListFilter } from "../interfaces/ITagListFilter.interface";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  const tagFilter = req.query as unknown as ITagListFilter
-  const foundProducts = getTagList(tagFilter);
+router.get("/", async (req: Request, res: Response) => {
+  try{
+    const tagFilter = req.query as unknown as ITagListFilter
+    const foundProducts = await getTagList(tagFilter);
   
-  res.status(200).json(foundProducts)
+    res.status(200).json(foundProducts)
+  } catch(error){
+    console.log(`Ocorreu um erro de servidor ${error} `)
+    res.status(500).json({
+      error:true,
+      message: `Ocorreu um erro de servidor ${error} `
+    })
+  }
+  
 });
 
-router.get("/:id",(req: Request, res: Response) => { 
+router.get("/:id", async (req: Request, res: Response) => { 
   const {id} = req.params;
 
-  const tagFound = getTagById(Number(id));
+  const tagFound = await getTagById(Number(id));
 
   if(!tagFound){
     res.status(404).json({
@@ -31,13 +40,12 @@ router.get("/:id",(req: Request, res: Response) => {
     })
     return
   }
-
   res.status(200).json(tagFound)
 });
 
-router.get("/nome/:nome",(req: Request, res: Response) => { 
+router.get("/nome/:nome", async (req: Request, res: Response) => { 
   const {nome} = req.params
-  const tagFound = getTagByName(nome)
+  const tagFound = await getTagByName(nome)
 
   if(!tagFound){
     res.status(404).json({
@@ -54,58 +62,47 @@ router.get("/nome/:nome",(req: Request, res: Response) => {
   })
 })
 
-router.post("/", (req: Request, res: Response) => {
-  
+router.post("/", async (req: Request, res: Response) => {
+
   const {nome} = req.body
 
-  const createdTag = createTag(nome)
+  const result = await createTag(nome)
 
-  if(!createdTag){
-    res.status(409).json({
+  if(result.error){
+    res.status(Number(result.httpError)).json({
       "error": true,
-      "message": "Uma tag com esse nome já foi cadastrada"
+      "message": result.message
     })
     return
   }
 
-  res.status(201).json({
-    error: false,
-    message: 'Tag cadastrada com sucesso',
-    data : createdTag
-  })
+  res.status(201).json(result)
 })
 
-router.put("/:id", (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const {nome} = req.body;
-  
-  const result = updateTag(id, nome)
- 
+
+  const result = await updateTag({id, nome})
+
   if(result.error){
-    res.status(Number(result.httpError)).json({error : result.error, message : result.message})
+    res.status(Number(result.httpError)).json({error : true, message : result.message})
     return
   }
-  
+
   res.status(200).json(result);
 });
 
-router.delete("/:id",(req: Request, res: Response) => { 
+router.delete("/:id", async (req: Request, res: Response) => { 
   const {id} = req.params;
-  const deletedTag = deleteTag(Number(id))
+  const result = await deleteTag(Number(id))
 
-  if(!deletedTag){
-    res.status(404).json({
-        error: true,
-        message: "Não foi possível encontrar uma tag com esse ID"
-    });
+  if(result.error){
+    res.status(Number(result.httpError)).json({error : true, message : result.message});
     return;
   }
 
-  res.status(200).json({
-      error: false,
-      message: "Tag excluída com sucesso",
-      data: deletedTag
-  });
+  res.status(200).json(result);
 });
 
 export default router;
