@@ -1,11 +1,13 @@
-import { Model } from "sequelize";
+import { Model, Optional } from "sequelize";
 import { IReclamacao } from "../interfaces/IReclamacao.interface";
 import { StatusReclamacao } from "../enums/statusReclamacao.enum";
 import { IEndereco } from "../interfaces/IEndereco.interface";
 import { DataType } from "sequelize-typescript";
 import sequelize from "../config/database";
 
-export class ReclamacaoModel extends Model<IReclamacao> {
+type ReclamacaoCreationalAttributes = Optional<IReclamacao, "id">
+
+export class ReclamacaoModel extends Model<IReclamacao, ReclamacaoCreationalAttributes> {
   public id!: number;
   public titulo!: string;
   public descricao!: string;

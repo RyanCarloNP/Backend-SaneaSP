@@ -12,7 +12,17 @@ export const getById = async (idReclamacao: number): Promise<IReclamacao | null>
     const reclamacao = await ReclamacaoModel.findOne({where:{id : idReclamacao}});
     return reclamacao;
 }
-export const postReclamacao = async (req:Request, res:Response) => {
-    let body = req.body;
-    console.log(body);
+export const postReclamacao = async (body : IReclamacao):Promise<IReclamacao> => {
+    const {id,titulo,descricao,objUsuario,status} = body;
+    const newReclamacao = {
+        id,
+        titulo,
+        descricao,
+        objUsuario,
+        status,
+        pontuacao:200,
+        data : new Date(),
+    };
+    const reclamacao = await ReclamacaoModel.create(newReclamacao)
+    return reclamacao
 }

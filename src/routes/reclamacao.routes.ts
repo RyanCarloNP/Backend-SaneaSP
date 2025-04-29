@@ -34,5 +34,16 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
-router.post('/', postReclamacao)
+router.post('/', async (req: Request, res: Response) =>{
+    try {
+        const body = req.body;
+        const reclamacao = await postReclamacao(body);
+        res.status(201).json(reclamacao);
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Ocorreu um erro de servidor ${error} `,
+        });
+    }
+})
 export default router
