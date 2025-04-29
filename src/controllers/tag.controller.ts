@@ -21,6 +21,11 @@ export const getTagList = async (tagFilter : ITagListFilter) : Promise<ITag[]> =
   return tags;
 }
 
+export const countTags = async () : Promise<number> => {
+  const tagCount = await TagModel.count();
+  return tagCount;
+}
+
 export const getTagById = async (tagId : number) => {
   const tagFound = await TagModel.findOne({where : {id : tagId}})
   return tagFound;
@@ -32,7 +37,7 @@ export const getTagByName = async (nameFilter : string) => {
 }
 
 export const createTag = async (nome : string) : Promise<IApiResponse<ITag>> => {
-  const tagFound = await TagModel.findOne({where : {nome : {[Op.like] : `%${nome}%`}}})
+  const tagFound = await TagModel.findOne({where : {nome : {[Op.like] : `${nome}`}}})
   if(tagFound){
     return {
       error:true,
