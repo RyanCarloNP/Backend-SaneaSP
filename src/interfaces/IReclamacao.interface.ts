@@ -14,7 +14,21 @@ export interface IReclamacao{
     rua ?: string,
     numero ?: string,
     complemento ?: string,
-    objUsuario: number,
+    idUsuario: number,
     objImagem ?: string[],
     objTag ?: string[],
+}
+
+export interface IFilterListReclamacao{
+    titulo ?: string,
+    descricao ?: string,
+    data ?: Date,
+    status ?: StatusReclamacao,
+    pontuacao? : number,
+    cep ?: string,
+    cidade ?: string,
+    bairro ?: string,
+    rua ?: string,
+    numero ?: string,
+    complemento ?: string
 }

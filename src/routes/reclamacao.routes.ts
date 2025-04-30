@@ -1,10 +1,12 @@
 import express, { Request, Response } from "express";
 import { getAllReclamacoes, getById, postReclamacao } from "../controllers/reclamacao.controller";
+import { IFilterListReclamacao } from "../interfaces/IReclamacao.interface";
 const router = express.Router()
 
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const foundReclamacoes = await getAllReclamacoes();
+        const query : IFilterListReclamacao = req.query
+        const foundReclamacoes = await getAllReclamacoes(query);
         res.status(200).json(foundReclamacoes);
     } catch (error) {
         res.status(500).json({

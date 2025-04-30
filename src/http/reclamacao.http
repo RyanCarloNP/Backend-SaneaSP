@@ -1,10 +1,10 @@
 // API REST de Municipios
 @baseURL = http://localhost:3000/reclamacao
-@id = 2
+@id = 1
 
 ###
 // GET 
-GET {{baseURL}}
+GET {{baseURL}}?titulo=Esgoto+Aberto&rua=Rua+Alonco+Muchon
 Content-Type: application/json
 
 ###
@@ -18,11 +18,10 @@ POST {{baseURL}}
 Content-Type: application/json
 
 {
-    "id": 1,
-    "titulo": "Falta de abastecimento de água",
+    "titulo": "Esgoto Aberto",
     "descricao": "Há três dias o bairro está sem água, afetando diversas famílias. A situação está insustentável, pois as pessoas não conseguem realizar atividades básicas como cozinhar, tomar banho ou lavar roupas. Entramos em contato com a companhia de saneamento, mas até agora não houve retorno sobre o motivo da interrupção ou previsão de normalização.",
-    "objUsuario" : "1",
-    "status" : 1
+    "idUsuario" : 2,
+    "rua": "Rua Alonco Muchon"
 }
 
 ###
