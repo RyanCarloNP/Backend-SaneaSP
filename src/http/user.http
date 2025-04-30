@@ -1,0 +1,35 @@
+// API REST de Usuários
+@baseURL = http://localhost:3000/user
+@id = 1
+###
+// GET 
+GET {{baseURL}}
+Content-Type: application/json
+
+###
+// GET - By id
+GET {{baseURL}}/{{id}}
+Content-Type: application/json
+
+###
+//POST
+POST {{baseURL}}
+Content-Type: application/json
+
+{
+    "nome": "cachorro"
+}
+
+###
+//PUT
+PUT {{baseURL}}/{{id}}
+Content-Type: application/json
+
+{
+    "nome": "GATO"
+}
+
+###
+//DELETE
+DELETE {{baseURL}}/{{id}}
+Content-Type: application/json
