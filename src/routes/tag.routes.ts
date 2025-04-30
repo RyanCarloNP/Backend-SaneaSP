@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import express from "express";
 import {
-  countTags,
+  countAllTags,
   createTag,
   deleteTag,
   getTagById,
@@ -30,7 +30,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/total", async (req: Request, res: Response) => {
   try {
-    const count = await countTags();
+    const count = await countAllTags();
     res.status(200).json(count);
   } catch (error) {
     console.log(`Ocorreu um erro de servidor ${error} `);
