@@ -3,6 +3,7 @@ import { UserModel } from "../models/user.model";
 import { Op } from "sequelize"
 import { HttpError } from "../enums/HttpError.enum";
 import { IApiResponse } from "../interfaces/IApiResponse.interface";
+import { error } from "console";
 
 export const getUserList = async (userFilter: IUserListFilters): Promise<IUser[]> => {
     const query: any = {};
@@ -64,9 +65,9 @@ export const createUser = async (id: number, nome: string, telefone: string, ema
 }
 
 export const updateUser = async (userData: IUser): Promise<IApiResponse<IUser>> => {
-    const foundUser = await UserModel.findOne({ where: { id: userData.id } });
+    const userFound = await UserModel.findOne({ where: { id: userData.id } });
 
-    if (foundUser == null) {
+    if (userFound == null) {
         return {
             error: true,
             message: "Usuário não encontrado.",
@@ -74,7 +75,7 @@ export const updateUser = async (userData: IUser): Promise<IApiResponse<IUser>> 
         }
     }
 
-    if (foundUser.nome == userData.nome) {
+    if (userFound.nome == userData.nome) {
         return {
             error: true,
             message: "O nome do usuário é igual ao seu nome anterior",
@@ -82,7 +83,7 @@ export const updateUser = async (userData: IUser): Promise<IApiResponse<IUser>> 
         }
     }
 
-    if (foundUser.email == userData.email) {
+    if (userFound.email == userData.email) {
         return {
             error: true,
             message: "O email do usuário é igual ao seu email anterior",
@@ -92,10 +93,44 @@ export const updateUser = async (userData: IUser): Promise<IApiResponse<IUser>> 
 
     const userNameExistis = await UserModel.findOne({
         where: {
-            [Op.or]: {
-                { nome: { [Op.like]: `%${userData.nome}%` } },
-        { id: { [Op.like]: userData.id } }
-            }
-        }  
+            nome: { [Op.like]: `${userData.nome}` },
+            id: { [Op.ne]: userData.id }
+        }
     })
+
+    if (userNameExistis) {
+        return {
+            error: true,
+            message: "Já existe um usuário com esse nome",
+            httpError: HttpError.Conflict
+        }
+    }
+
+    const updateUser = await userFound.update(userData);
+
+    return {
+        error: false,
+        message: "Usuário atualizado com sucesso!",
+        data: updateUser
+    }
+};
+
+export const deleteUser = async (userId: number): Promise<IApiResponse> => {
+    const userFound = await UserModel.findByPk(userId);
+
+    if (!userFound) {
+        return {
+            message: 'Nenhum usuário foi encontrado',
+            error: true,
+            httpError: HttpError.NotFound
+        }
+    }
+
+    await userFound.destroy();
+
+    return {
+        message: 'Usuário excluido com sucesso!',
+        error: false,
+        data: userFound
+    }
 }
