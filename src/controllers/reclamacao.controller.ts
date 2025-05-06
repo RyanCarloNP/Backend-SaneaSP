@@ -4,7 +4,9 @@ import { IFilterListReclamacao, IReclamacao } from "../interfaces/IReclamacao.in
 import { Op } from "sequelize";
 
 export const getAllReclamacoes = async (filtros : IFilterListReclamacao): Promise<IReclamacao[]> =>{
-    let query: any = {}
+    let query: any = {
+        where : {}
+    }
     if(filtros){
         if (filtros) {
             if (filtros.titulo) {
@@ -19,8 +21,9 @@ export const getAllReclamacoes = async (filtros : IFilterListReclamacao): Promis
                 };
             }
         }
-        console.log(query);
-        const reclamacoes = await ReclamacaoModel.findAll(query);
+    }
+    console.log(query);
+    const reclamacoes = await ReclamacaoModel.findAll(query);
     return reclamacoes
 };
 
@@ -29,10 +32,21 @@ export const getById = async (idReclamacao: number): Promise<IReclamacao | null>
     return reclamacao;
 }
 export const postReclamacao = async (body : IReclamacao):Promise<IReclamacao> => {
-    const {titulo,descricao,idUsuario,bairro,cep,cidade,complemento,numero,rua} = body;
+    const {titulo,descricao,idUsuario,bairro,cep,cidade,complemento,numero,rua, objImagem, objTag} = body;
+    let pontuacao = 0
+    if(objImagem){
+        pontuacao = 100 * objImagem?.length;
+    }
+
+    // por enquanto a pontuação de tag vai ser pela quantidade de tags adicionadas nas reclamações
+    if(objTag){
+        pontuacao = 100 * objTag?.length;
+    }
+
+    
     const newReclamacao = {
       status: 0,
-      pontuacao: 200,
+      pontuacao,
       data: new Date(),
       titulo,
       descricao,
@@ -44,6 +58,6 @@ export const postReclamacao = async (body : IReclamacao):Promise<IReclamacao> =>
       numero,
       rua,
     };
-    const reclamacao = await ReclamacaoModel.create(newReclamacao)
+    const reclamacao = await ReclamacaoModel.create(newReclamacao);
     return reclamacao
 }
