@@ -1,4 +1,3 @@
-// API REST de Municipios
 @baseURL = http://localhost:3000/reclamacao
 @id = 1
 

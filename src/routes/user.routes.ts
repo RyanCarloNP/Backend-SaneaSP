@@ -1,6 +1,6 @@
 import express from "express";
 import { Request, Response } from "express";
-import { iUserListFilters } from "../interfaces/iUser.interface";
+import { iUserListFilters } from "../interfaces/IUser.interface";
 import { listUsers } from "../controllers/user.controller";
 
 const router = express.Router();
