@@ -5,24 +5,52 @@ import { Op } from "sequelize";
 
 export const getAllReclamacoes = async (filtros : IFilterListReclamacao): Promise<IReclamacao[]> =>{
     let query: any = {
-        where : {}
+        where : {},
     }
     if(filtros){
-        if (filtros) {
-            if (filtros.titulo) {
-                query.where.titulo = {
-                    [Op.like]: `%${filtros.titulo}%`
-                };
-            }
-    
-            if (filtros.rua) {
-                query.where.rua = {
-                    [Op.like]: `%${filtros.rua}%`
-                };
+
+        if (filtros.titulo) {
+            query.where.titulo = {
+                [Op.like]: `%${filtros.titulo}%`
+            };
+        }
+        if (filtros.rua) {
+            query.where.rua = {
+                [Op.like]: `%${filtros.rua}%`
+            };
+        }
+        if (filtros.cep) {
+            query.where.cep = {
+                [Op.like]: `%${filtros.cep}%`
+            };
+        }
+        if (filtros.bairro) {
+            query.where.bairro = {
+                [Op.like]: `%${filtros.bairro}%`
+            };
+        }
+        if (filtros.cidade) {
+            query.where.cidade = {
+                [Op.like]: `%${filtros.cidade}%`
+            };
+        }
+        if (filtros.status) {
+            query.where.status = {
+                [Op.like]: `%${filtros.status}%`
+            };
+        }
+        // if (filtros.data) {
+        //     const data = new Date(filtros.data);
+        //     query.where.data = {
+        //         [Op.like]: `%${filtros.data}%`
+        //     };
+        // }
+        if(filtros.pontuacao){
+            query.where.pontuacao = {
+                [Op.like]: `${filtros.pontuacao}`
             }
         }
     }
-    console.log(query);
     const reclamacoes = await ReclamacaoModel.findAll(query);
     return reclamacoes
 };
