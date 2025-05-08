@@ -1,7 +1,7 @@
 import { Request, request, Response } from "express";
 import { ReclamacaoModel } from "../models/reclamacao.model";
 import { ICreateReclamacao, IFilterListReclamacao, IReclamacao } from "../interfaces/IReclamacao.interface";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 export const getAllReclamacoes = async (filtros : IFilterListReclamacao): Promise<IReclamacao[]> =>{
     let query: any = {
@@ -80,4 +80,18 @@ export const postReclamacao = async (body : ICreateReclamacao):Promise<IReclamac
     };
     const reclamacao = await ReclamacaoModel.create(newReclamacao);
     return reclamacao
+}
+
+export const putReclamacao =async(idReclamacao : number, body: IReclamacao):Promise<boolean> =>{
+    try {
+        await ReclamacaoModel.update(body, {
+            where :{
+                id: idReclamacao
+            }
+        })
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
 }

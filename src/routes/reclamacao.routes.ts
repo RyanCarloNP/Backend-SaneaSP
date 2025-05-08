@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
-import { getAllReclamacoes, getById, postReclamacao } from "../controllers/reclamacao.controller";
+import { getAllReclamacoes, getById, postReclamacao, putReclamacao } from "../controllers/reclamacao.controller";
 import { IFilterListReclamacao } from "../interfaces/IReclamacao.interface";
+import { error } from "console";
 const router = express.Router()
 
 router.get('/', async (req: Request, res: Response) => {
@@ -41,6 +42,32 @@ router.post('/', async (req: Request, res: Response) =>{
         const body = req.body;
         const reclamacao = await postReclamacao(body);
         res.status(201).json(reclamacao);
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Ocorreu um erro de servidor ${error} `,
+        });
+    }
+})
+
+router.put('/:id', async (req:Request, res: Response) =>{
+    try {
+        const id = Number(req.params.id);
+        const body = req.body;
+
+        const existReclamacao = await getById(id);
+        if(existReclamacao){
+            const atualizar = await putReclamacao(id,body);
+            if(atualizar){
+                res.status(200).json(body);
+            }
+            else{
+                new Error("Erro na execução do Update");
+            }
+        }
+        else{
+            res.status(404).json({error:true,mensage:'Reclamação não encontrada'})
+        }
     } catch (error) {
         res.status(500).json({
             error: true,
