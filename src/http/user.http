@@ -1,6 +1,6 @@
 // API REST de Usuários
 @baseURL = http://localhost:3000/user
-@id = 2
+@id = 1
 ###
 // GET 
 GET {{baseURL}}
@@ -17,9 +17,8 @@ POST {{baseURL}}
 Content-Type: application/json
 
 {
-    "id": 2,
     "nome": "UserTest",
-    "telefone": "",
+    "telefone": "(12) 34567-8901",
     "email": "usertest1email@gmail.com",
     "senha": "user1password1234",
     "cpf": "123.456.789-01",
@@ -28,7 +27,7 @@ Content-Type: application/json
     "bairro": "User1 Neigborhood TestNeigborhoodName",
     "rua": "User1 Rua TestRuaName",
     "numero": 123,
-    "complemento": null,
+    "complemento": " ",
 }
 
 ###
@@ -48,7 +47,7 @@ Content-Type: application/json
     "bairro": "User1 Neigborhood TestNeigborhoodName",
     "rua": "User1 Rua TestRuaName",
     "numero": 123,
-    "complemento": null,
+    "complemento": " ",
 }
 
 ###
