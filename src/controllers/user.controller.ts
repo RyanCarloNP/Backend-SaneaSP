@@ -5,25 +5,13 @@ import { HttpError } from "../enums/HttpError.enum";
 import { IApiResponse } from "../interfaces/IApiResponse.interface";
 
 export const getUserList = async (userFilter: IUserListFilters): Promise<IUser[]> => {
-    const query: any = {};
+    const query: any = { where: {} };
 
-    if (userFilter.nome) {
-        query.where = {
-            [Op.like]: `%${userFilter.nome}%`
-        };
-    };
+    if (userFilter.nome) { query.where.nome = { [Op.like]: `%${userFilter.nome}%` } };
 
-    if (userFilter.email) {
-        query.where = {
-            [Op.like]: `%${userFilter.email}%`
-        };
-    };
+    if (userFilter.email) { query.where.email = { [Op.like]: `%${userFilter.email}%` } };
 
-    if (userFilter.cpf) {
-        query.where = {
-            [Op.like]: `%${userFilter.cpf}%`
-        };
-    };
+    if (userFilter.cpf) { query.where.cpf = { [Op.like]: `%${userFilter.cpf}%` } };
 
     const user = await UserModel.findAll(query);
     return user;
@@ -34,7 +22,22 @@ export const getUserById = async (userId: number) => {
     return foundUser;
 }
 
-export const createUser = async (id: number, nome: string, telefone: string, email: string, senha: string, cpf: string, cep: string, cidade: string, bairro: string,
+export const getUserByName = async (userName: string) => {
+    const foundUser = await UserModel.findOne({ where: { nome: userName}});
+    return foundUser;
+}
+
+export const getUserByEmail = async (userEmail: string) => {
+    const foundUser= await UserModel.findOne({ where: { email: userEmail}});
+    return foundUser;
+}
+
+export const getUserByCPF = async (userCPF: string) => {
+    const foundUser = await UserModel.findOne({ where: { cpf: userCPF}});
+    return foundUser;
+}
+
+export const createUser = async ( nome: string, telefone: string, email: string, senha: string, cpf: string, cep: string, cidade: string, bairro: string,
     rua: string, numero: number, complemento: string): Promise<IApiResponse<IUser>> => {
 
     const foundUser = await UserModel.findOne({
@@ -55,7 +58,7 @@ export const createUser = async (id: number, nome: string, telefone: string, ema
         }
     }
 
-    const createdUser = await UserModel.create({ id, nome, telefone, email, senha, cpf, cep, cidade, bairro, rua, numero, complemento });
+    const createdUser = await UserModel.create({ nome, telefone, email, senha, cpf, cep, cidade, bairro, rua, numero, complemento });
     return {
         error: false,
         message: "Usuário cadastrado com sucesso!",

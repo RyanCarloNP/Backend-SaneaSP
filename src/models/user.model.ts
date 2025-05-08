@@ -1,4 +1,4 @@
-import { DataType, DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import { IUser } from "../interfaces/IUser.interface";
 import sequelize from "../config/database";
 
