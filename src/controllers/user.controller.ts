@@ -23,45 +23,41 @@ export const getUserById = async (userId: number) => {
 }
 
 export const getUserByName = async (userName: string) => {
-    const foundUser = await UserModel.findOne({ where: { nome: userName}});
+    const foundUser = await UserModel.findOne({ where: { nome: userName } });
     return foundUser;
 }
 
 export const getUserByEmail = async (userEmail: string) => {
-    const foundUser= await UserModel.findOne({ where: { email: userEmail}});
+    const foundUser = await UserModel.findOne({ where: { email: userEmail } });
     return foundUser;
 }
 
 export const getUserByCPF = async (userCPF: string) => {
-    const foundUser = await UserModel.findOne({ where: { cpf: userCPF}});
+    const foundUser = await UserModel.findOne({ where: { cpf: userCPF } });
     return foundUser;
 }
 
-export const createUser = async ( nome: string, telefone: string, email: string, senha: string, cpf: string, cep: string, cidade: string, bairro: string,
-    rua: string, numero: number, complemento: string): Promise<IApiResponse<IUser>> => {
-
-    const foundUser = await UserModel.findOne({
+export const createUser = async (user: IUser): Promise<IApiResponse<IUser>> => {
+    const userFound = await UserModel.findOne({
         where: {
-            [Op.or]: [
-                { nome: { [Op.like]: `${nome}` } },
-                { email: { [Op.like]: `${email}` } },
-                { cpf: { [Op.like]: `${cpf}` } }
-            ]
+            email: { [Op.like]: `${user.email}` },
+            cpf: { [Op.like]: `${user.cpf}` },
+            nome: { [Op.like]: `${user.nome}` }
         }
     });
 
-    if (foundUser) {
+    if (userFound) {
         return {
             error: true,
-            message: "Este Usuário já está Cadastrado.",
-            httpError: HttpError.Conflict
+            message: "Usuário ja cadastrado",
+            httpError: HttpError.BadRequest
         }
     }
 
-    const createdUser = await UserModel.create({ nome, telefone, email, senha, cpf, cep, cidade, bairro, rua, numero, complemento });
+    const createdUser = await UserModel.create(user);
     return {
         error: false,
-        message: "Usuário cadastrado com sucesso!",
+        message: "Usuário cadastrado com sucesso",
         data: createdUser
     }
 }
@@ -77,7 +73,7 @@ export const updateUser = async (userData: IUser): Promise<IApiResponse<IUser>> 
         }
     }
 
-    if (userFound.nome == userData.nome) {
+    if (userFound.nome === userData.nome) {
         return {
             error: true,
             message: "O nome do usuário é igual ao seu nome anterior",
@@ -85,7 +81,7 @@ export const updateUser = async (userData: IUser): Promise<IApiResponse<IUser>> 
         }
     }
 
-    if (userFound.email == userData.email) {
+    if (userFound.email === userData.email) {
         return {
             error: true,
             message: "O email do usuário é igual ao seu email anterior",

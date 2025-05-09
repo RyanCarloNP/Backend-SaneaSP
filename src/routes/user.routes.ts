@@ -134,10 +134,11 @@ router.post("/", async (req: Request, res: Response) => {
         const {
             nome, telefone, email, senha, cpf, cep, cidade, bairro,
             rua, numero, complemento } = req.body;
-        const result = await createUser(
+        const result = await createUser({
             nome, telefone, email, senha, cpf, cep, cidade, bairro,
-            rua, numero, complemento
-        );
+            rua, numero, complemento,
+            id: 0
+        });
 
         if (result.error) {
             res.status(Number(result.httpError)).json({
@@ -146,7 +147,7 @@ router.post("/", async (req: Request, res: Response) => {
             });
             return;
         }
-        res.status(200).json(result)
+        res.status(201).json(result);
     } catch (error) {
         console.log(`Ocorreu um erro de servidor ${error} `);
         res.status(500).json({
