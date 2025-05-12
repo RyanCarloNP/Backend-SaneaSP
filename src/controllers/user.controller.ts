@@ -1,36 +1,134 @@
-import { iUser, iUserListFilters } from "../interfaces/iUser.interface";
+import { IUser, IUserListFilters } from "../interfaces/IUser.interface";
+import { UserModel } from "../models/user.model";
+import { Op } from "sequelize"
+import { HttpError } from "../enums/HttpError.enum";
+import { IApiResponse } from "../interfaces/IApiResponse.interface";
 
-const users = [
-    {
-        id: 1,
-        nome: "Ryan Carlo Negretti Pereira",
-        telefone: "(15) 99699-9062",
-        email: "ryan@gmail.com",
-        senha: "123456",
-        cpf: "511.433.668-16",
-        cep: "18112-525",
-        rua: "Carmelina Garcia",
-        numero: 303,
-        complemento: " "
-    }
-];
+export const getUserList = async (userFilter: IUserListFilters): Promise<IUser[]> => {
+    const query: any = { where: {} };
 
-export const listUsers = (userFilters: iUserListFilters) => {
-    const {
-        nome: nameFilter,
-        email: emailFilter,
-        cpf: cpfFilter
-    } = userFilters;
+    if (userFilter.nome) { query.where.nome = { [Op.like]: `%${userFilter.nome}%` } };
 
-    const foundUsers = users.filter(({ nome, email, cpf }) => {
-        if (!(nameFilter || emailFilter || cpfFilter)) return true;
-        let found = true;
+    if (userFilter.email) { query.where.email = { [Op.like]: `%${userFilter.email}%` } };
 
-        if (nameFilter && !nome.toLowerCase().includes(nameFilter.toLowerCase())) found = false;
-        if (emailFilter && !email.toLowerCase().includes(emailFilter.toLowerCase())) found = false;
-        if (cpfFilter && !cpf.toLowerCase().includes(cpfFilter.toLowerCase())) found = false;
+    if (userFilter.cpf) { query.where.cpf = { [Op.like]: `%${userFilter.cpf}%` } };
 
-        return found;
+    const user = await UserModel.findAll(query);
+    return user;
+}
+
+export const getUserById = async (userId: number) => {
+    const foundUser = await UserModel.findOne({ where: { id: userId } });
+    return foundUser;
+}
+
+export const getUserByName = async (userName: string) => {
+    const foundUser = await UserModel.findOne({ where: { nome: userName } });
+    return foundUser;
+}
+
+export const getUserByEmail = async (userEmail: string) => {
+    const foundUser = await UserModel.findOne({ where: { email: userEmail } });
+    return foundUser;
+}
+
+export const getUserByCPF = async (userCPF: string) => {
+    const foundUser = await UserModel.findOne({ where: { cpf: userCPF } });
+    return foundUser;
+}
+
+export const createUser = async (user: IUser): Promise<IApiResponse<IUser>> => {
+    const userFound = await UserModel.findOne({
+        where: {
+            email: { [Op.like]: `${user.email}` },
+            cpf: { [Op.like]: `${user.cpf}` },
+            nome: { [Op.like]: `${user.nome}` }
+        }
     });
-    return foundUsers;
+
+    if (userFound) {
+        return {
+            error: true,
+            message: "Usuário ja cadastrado",
+            httpError: HttpError.BadRequest
+        }
+    }
+
+    const createdUser = await UserModel.create(user);
+    return {
+        error: false,
+        message: "Usuário cadastrado com sucesso",
+        data: createdUser
+    }
+}
+
+export const updateUser = async (userData: IUser): Promise<IApiResponse<IUser>> => {
+    const userFound = await UserModel.findOne({ where: { id: userData.id } });
+
+    if (userFound == null) {
+        return {
+            error: true,
+            message: "Usuário não encontrado.",
+            httpError: HttpError.NotFound
+        }
+    }
+
+    if (userFound.nome === userData.nome) {
+        return {
+            error: true,
+            message: "O nome do usuário é igual ao seu nome anterior",
+            httpError: HttpError.BadRequest
+        }
+    }
+
+    if (userFound.email === userData.email) {
+        return {
+            error: true,
+            message: "O email do usuário é igual ao seu email anterior",
+            httpError: HttpError.BadRequest
+        }
+    }
+
+    const userNameExistis = await UserModel.findOne({
+        where: {
+            nome: { [Op.like]: `${userData.nome}` },
+            id: { [Op.ne]: userData.id }
+        }
+    })
+
+    if (userNameExistis) {
+        return {
+            error: true,
+            message: "Já existe um usuário com esse nome",
+            httpError: HttpError.Conflict
+        }
+    }
+
+    const updateUser = await userFound.update(userData);
+
+    return {
+        error: false,
+        message: "Usuário atualizado com sucesso!",
+        data: updateUser
+    }
+};
+
+export const deleteUser = async (userId: number): Promise<IApiResponse> => {
+    const userFound = await UserModel.findByPk(userId);
+
+    if (!userFound) {
+        return {
+            message: 'Nenhum usuário foi encontrado',
+            error: true,
+            httpError: HttpError.NotFound
+        }
+    }
+
+    await userFound.destroy();
+
+    return {
+        message: 'Usuário excluido com sucesso!',
+        error: false,
+        data: userFound
+    }
 }

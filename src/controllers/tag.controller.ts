@@ -6,12 +6,12 @@ import { TagModel } from "../models/tag.model";
 import { Op } from "sequelize";
 
 export const getTagList = async (tagFilter : ITagListFilter) : Promise<ITag[]> => {
-  const query : any = {}
+  const query : any = {
+    where : {}
+  }
   if(tagFilter.nome){
-    query.where = {
-      nome: {
-        [Op.like]: `%${tagFilter.nome}%`
-      }
+    query.where.nome = {
+      [Op.like]: `%${tagFilter.nome}%`
     };
   }
   if(tagFilter.limit){
@@ -21,7 +21,7 @@ export const getTagList = async (tagFilter : ITagListFilter) : Promise<ITag[]> =
   return tags;
 }
 
-export const countTags = async () : Promise<number> => {
+export const countAllTags = async () : Promise<number> => {
   const tagCount = await TagModel.count();
   return tagCount;
 }
@@ -36,8 +36,8 @@ export const getTagByName = async (nameFilter : string) => {
   return tagFound;
 }
 
-export const createTag = async (nome : string) : Promise<IApiResponse<ITag>> => {
-  const tagFound = await TagModel.findOne({where : {nome : {[Op.like] : `${nome}`}}})
+export const createTag = async (newTagName : string) : Promise<IApiResponse<ITag>> => {
+  const tagFound = await TagModel.findOne({where : {nome : {[Op.like] : `${newTagName}`}}})
   if(tagFound){
     return {
       error:true,
@@ -46,7 +46,7 @@ export const createTag = async (nome : string) : Promise<IApiResponse<ITag>> => 
     }
   }
 
-  const createdTag = await TagModel.create({nome})
+  const createdTag = await TagModel.create({nome : newTagName})
 
   return {
     error:false,
