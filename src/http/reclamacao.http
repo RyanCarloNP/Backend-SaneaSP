@@ -33,22 +33,22 @@ Content-Type: application/json
 
 ###
 //PUT
-PUT {{baseURL}}/{{id}}
+PUT {{baseURL}}/1
 Content-Type: application/json
 
 {
-    "titulo": "Falta de abastecimento de água",
-    "descricao": "Há três dias o bairro está sem água, afetando diversas famílias. A situação está insustentável, pois as pessoas não conseguem realizar atividades básicas como cozinhar, tomar banho ou lavar roupas. Entramos em contato com a companhia de saneamento, mas até agora não houve retorno sobre o motivo da interrupção ou previsão de normalização.",
-    "data": "2024-11-28",
-    "objTag": "Abastecimento",
-    "objImagem": "img/paginas/reclamacoes/user1.jpg",
-    "idUsuario": 1,
-    "cep": "18075718",
-    "bairro": "Jardim Brasilândia",
-    "rua": "Rua Alonco Muchon",
-    "cidade": "Sorocaba",
-    "numero": "334",
-    "complemento": "casa 27"
+  "id": 1,
+  "titulo": "Esgoto Aberto",
+  "descricao": "Há três dias o bairro está sem água, afetando diversas famílias. A situação está insustentável, pois as pessoas não conseguem realizar atividades básicas como cozinhar, tomar banho ou lavar roupas. Entramos em contato com a companhia de saneamento, mas até agora não houve retorno sobre o motivo da interrupção ou previsão de normalização.",
+  "data": "2025-05-06T20:29:04.067Z",
+  "status": 1,
+  "cep": "18050600",
+  "cidade": "Sorocaba" ,
+  "bairro": "Jardim Guaruja",
+  "rua": "Rua Alonco Muchon",
+  "numero": "334",
+  "complemento": "casa 27",
+  "idUsuario": 2
 }
 
 ###

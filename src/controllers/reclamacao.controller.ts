@@ -63,18 +63,7 @@ export const getById = async (idReclamacao: number): Promise<IReclamacao | null>
     return reclamacao;
 }
 export const postReclamacao = async (body : ICreateReclamacao):Promise<IReclamacao> => {
-    const {Imagem, Tag} = body;
-    let pontuacao = 0
-    if(Imagem){
-        pontuacao = 100 * Imagem?.length;
-    }
-
-    // por enquanto a pontuação de tag vai ser pela quantidade de tags adicionadas nas reclamações
-    if(Tag){
-        pontuacao = 100 * Tag?.length;
-    }
-
-    
+    const pontuacao = gerarPontuacao(body);
     const newReclamacao = {
       status: 0,
       pontuacao,
@@ -85,18 +74,20 @@ export const postReclamacao = async (body : ICreateReclamacao):Promise<IReclamac
     return reclamacao
 }
 
-export const putReclamacao =async(idReclamacao : number, body: IReclamacao):Promise<boolean> =>{
-    try {
-        await ReclamacaoModel.update(body, {
-            where :{
-                id: idReclamacao
-            }
-        })
-        return true;
-    } catch (error) {
-        console.error(error);
-        return false;
-    }
+export const putReclamacao =async(idReclamacao : number, body: IReclamacao):Promise<IApiResponse> =>{
+    body.pontuacao = gerarPontuacao(body);
+    
+    await ReclamacaoModel.update(body, {
+        where :{
+            id: idReclamacao
+        }
+    })
+    return {
+        message: 'Reclamação atualizada com sucesso',
+        error : false,
+        data : body
+    };
+
 }
 
 export const deleteReclamacao = async(idReclamacao : number): Promise<IApiResponse> => {
@@ -114,4 +105,22 @@ export const deleteReclamacao = async(idReclamacao : number): Promise<IApiRespon
         error : false,
         data : reclamacao
     };      
+}
+
+function gerarPontuacao(bodyRequest : IReclamacao | ICreateReclamacao): number {
+    let pontuacao = 0;
+    // por enquanto a pontuação de tag vai ser pela quantidade de tags adicionadas nas reclamações
+    if(bodyRequest.Imagem){
+        pontuacao += 100 * bodyRequest.Imagem.length;
+    }
+
+    // por enquanto a pontuação de tag vai ser pela quantidade de tags adicionadas nas reclamações
+    if(bodyRequest.Tag){
+        pontuacao += 100 * bodyRequest.Tag.length;
+    }
+
+    if(bodyRequest.cep && bodyRequest.rua && bodyRequest.numero && bodyRequest.bairro && bodyRequest.cidade){
+        pontuacao += 200
+    }
+    return pontuacao
 }

@@ -56,12 +56,12 @@ router.put('/:id', async (req:Request, res: Response) =>{
 
         const existReclamacao = await getById(id);
         if(existReclamacao){
-            const atualizar = await putReclamacao(id,body);
-            if(atualizar){
-                res.status(200).json(body);
+            const result = await putReclamacao(id,body);
+            if(!result.error){
+                res.status(200).json(result.data);
             }
             else{
-                new Error("Erro na execução do Update");
+                throw `Erro na execução do Update ${result.message}`;
             }
         }
         else{
