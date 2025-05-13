@@ -17,7 +17,17 @@ POST {{baseURL}}
 Content-Type: application/json
 
 {
-    "nome": "cachorro"
+    "nome": "UserTest",
+    "telefone": "(12) 34567-8901",
+    "email": "usertest1email@gmail.com",
+    "senha": "user1password1234",
+    "cpf": "123.456.789-01",
+    "cep": "121345-678",
+    "cidade": "USer1 City TestCityName",
+    "bairro": "User1 Neigborhood TestNeigborhoodName",
+    "rua": "User1 Rua TestRuaName",
+    "numero": 123,
+    "complemento": " ",
 }
 
 ###
@@ -26,7 +36,18 @@ PUT {{baseURL}}/{{id}}
 Content-Type: application/json
 
 {
-    "nome": "GATO"
+    "id": 2,
+    "nome": "UserTest2",
+    "telefone": "(12) 34567-8901",
+    "email": "usertest1email@gmail.com",
+    "senha": "user1password1234",
+    "cpf": "123.456.789-01",
+    "cep": "121345-678",
+    "cidade": "USer1 City TestCityName",
+    "bairro": "User1 Neigborhood TestNeigborhoodName",
+    "rua": "User1 Rua TestRuaName",
+    "numero": 123,
+    "complemento": " ",
 }
 
 ###
