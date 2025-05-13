@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
-import { getAllReclamacoes, getById, postReclamacao, putReclamacao } from "../controllers/reclamacao.controller";
+import { deleteReclamacao, getAllReclamacoes, getById, postReclamacao, putReclamacao } from "../controllers/reclamacao.controller";
 import { IFilterListReclamacao } from "../interfaces/IReclamacao.interface";
-import { error } from "console";
 const router = express.Router()
 
 router.get('/', async (req: Request, res: Response) => {
@@ -67,6 +66,23 @@ router.put('/:id', async (req:Request, res: Response) =>{
         }
         else{
             res.status(404).json({error:true,mensage:'Reclamação não encontrada'})
+        }
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Ocorreu um erro de servidor ${error} `,
+        });
+    }
+});
+router.delete('/:id',async(req:Request,res:Response)=>{
+    try {
+        const idReclamacao = Number(req.params.id);
+        const result = await deleteReclamacao(idReclamacao);
+        if(result.error){
+            res.status(404).json(result);
+        }
+        else{
+            res.status(200).json(result)
         }
     } catch (error) {
         res.status(500).json({

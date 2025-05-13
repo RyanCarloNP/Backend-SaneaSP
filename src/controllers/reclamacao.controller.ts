@@ -1,7 +1,10 @@
+import { error } from 'console';
 import { Request, request, Response } from "express";
 import { ReclamacaoModel } from "../models/reclamacao.model";
 import { ICreateReclamacao, IFilterListReclamacao, IReclamacao } from "../interfaces/IReclamacao.interface";
 import { Op, where } from "sequelize";
+import { IApiResponse } from "../interfaces/IApiResponse.interface";
+import { HttpError } from "../enums/HttpError.enum";
 
 export const getAllReclamacoes = async (filtros : IFilterListReclamacao): Promise<IReclamacao[]> =>{
     let query: any = {
@@ -94,4 +97,21 @@ export const putReclamacao =async(idReclamacao : number, body: IReclamacao):Prom
         console.error(error);
         return false;
     }
+}
+
+export const deleteReclamacao = async(idReclamacao : number): Promise<IApiResponse> => {
+    const reclamacao = await ReclamacaoModel.findByPk(idReclamacao); 
+    if(!reclamacao){
+        return {
+            message: 'Reclamação não encontrada',
+            error : true,
+            httpError: HttpError.NotFound
+        };
+    }
+    await reclamacao.destroy();
+    return {
+        message: 'Reclamação excluída com sucesso',
+        error : false,
+        data : reclamacao
+    };      
 }
