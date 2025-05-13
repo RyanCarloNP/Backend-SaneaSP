@@ -15,9 +15,16 @@ export class ReclamacaoModel extends Model<IReclamacao, ReclamacaoCreationalAttr
   public status!: StatusReclamacao;
   public pontuacao!: number;
   public cep ?: string;
-  public objUsuario!: number;
-  public objImagem?: string[];
-  public objTag?: string[];
+  public cidade ?: string;
+  public bairro ?: string;
+  public rua ?: string;
+  public numero ?: string;
+  public complemento ?: string;
+  public idUsuario!: number;
+  public Usuario !: number;
+  public Imagem?: string[];
+  public Tag?: string[];
+
 }
 
 ReclamacaoModel.init(
@@ -62,24 +69,29 @@ ReclamacaoModel.init(
         bairro: {
             allowNull: true,
             type: DataType.STRING(30),
+            field:"bairro"
         },
         rua: {
             allowNull: true,
             type: DataType.STRING(30),
+            field:"rua"
         },
         numero: {
             allowNull: true,
             type: DataType.STRING(30),
+            field:"numero"
         },
         complemento: {
             allowNull: true,
             type: DataType.STRING(30),
+            field:"complemento"
         },
         pontuacao: {
             allowNull: false,
             type: DataType.DECIMAL(5, 2),
+            field:"pontuacao"
         },
-        objUsuario: {
+        idUsuario: {
             allowNull: false,
             type: DataType.INTEGER,
             field:"id_usuario"
