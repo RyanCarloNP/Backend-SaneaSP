@@ -1,2 +1,14 @@
 # Backend-SaneaSP
-Aqui jas a lógica interna para comunicação do Front - SaneaSP com o Branco de Dados
+
+🔗 [Repositório FrontEnd](https://github.com/MathGueff/FrontEnd-SaneaSP.git)
+
+## Comandos:
+
+Iniciando a aplicação:
+`npm run start` 
+
+Cria uma nova migration `npm run migration-create <nome>`
+
+Realiza as migrações `npm run migrate`
+
+Desfaz as migrações `npm run migrate:undo`

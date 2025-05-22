@@ -1,5 +1,6 @@
 import { IEndereco } from './IEndereco.interface';
 import { StatusReclamacao } from "../enums/statusReclamacao.enum";
+import { ITag } from './ITag.interface';
 
 export interface IReclamacao{
     id : number,
@@ -16,7 +17,7 @@ export interface IReclamacao{
     complemento ?: string,
     idUsuario: number,
     Imagem ?: string[],
-    Tag ?: string[],
+    tags ?: number[],
 }
 
 export interface IFilterListReclamacao{
@@ -43,6 +44,6 @@ export interface ICreateReclamacao{
     numero ?: string,
     complemento ?: string,
     idUsuario: number,
-    Imagem ?: string[],
-    Tag ?: string[]
+    imagens ?: string[],
+    tags ?: number[]
 }
