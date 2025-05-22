@@ -1,9 +1,9 @@
 import { Model, Optional } from "sequelize";
 import { IReclamacao } from "../interfaces/IReclamacao.interface";
 import { StatusReclamacao } from "../enums/statusReclamacao.enum";
-import { IEndereco } from "../interfaces/IEndereco.interface";
 import { DataType } from "sequelize-typescript";
 import sequelize from "../config/database";
+import { ITag } from "../interfaces/ITag.interface";
 
 type ReclamacaoCreationalAttributes = Optional<IReclamacao, "id">
 
@@ -22,9 +22,8 @@ export class ReclamacaoModel extends Model<IReclamacao, ReclamacaoCreationalAttr
   public complemento ?: string;
   public idUsuario!: number;
   public Usuario !: number;
-  public Imagem?: string[];
-  public Tag?: string[];
-
+  public imagem?: string[];
+  public tags ?: number[];
 }
 
 ReclamacaoModel.init(
@@ -103,3 +102,4 @@ ReclamacaoModel.init(
         timestamps:false
     }
 );
+
