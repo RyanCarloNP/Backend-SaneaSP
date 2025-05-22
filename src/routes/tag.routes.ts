@@ -18,7 +18,13 @@ router.get("/", async (req: Request, res: Response) => {
     const tagFilter = req.query as unknown as ITagListFilter;
     const foundTags = await getTagList(tagFilter);
 
-    res.status(200).json(foundTags);
+    res.status(200).json({
+      data : foundTags,
+      pagination : {
+        limit : tagFilter.limit || 0,
+        total : foundTags.length
+      }
+    });
   } catch (error) {
     console.log(`Ocorreu um erro de servidor ${error} `);
     res.status(500).json({

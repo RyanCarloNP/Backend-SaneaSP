@@ -69,7 +69,7 @@ export const updateTag = async (tagData : ITag) : Promise<IApiResponse<ITag>> =>
   if(tagFound.nome === tagData.nome){
     return {
       error: true,
-      message: "O nome da tag é igual ao seu nome anterior",
+      message: "O nome da tag não pode ser igual ao seu nome anterior",
       httpError: HttpError.BadRequest
     }
   }
