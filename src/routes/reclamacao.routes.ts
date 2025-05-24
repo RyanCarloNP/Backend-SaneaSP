@@ -24,6 +24,7 @@ router.get('/:id', async (req: Request, res: Response) => {
                 error: true,
                 message: "Não foi possível encontrar uma Reclamação com esse ID"
             })
+            return;
         }
 
         res.status(200).json(reclamacao);

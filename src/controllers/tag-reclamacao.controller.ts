@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { ICreateTagReclamacao, ITagReclamacao } from "../interfaces/ITagReclamacao.interface";
 import { TagModel, TagReclamacaoModel } from "../models";
 
@@ -10,32 +11,53 @@ export const getTagReclamacaoIdsList = async (reclamacaoId : number) => {
 }
 
 export const postTagReclamacoes = async (tags : number[], reclamacaoId : number) => {
-    await Promise.all(tags.map(async tagId => {
-       await createTagReclamacoes({id_tag : tagId, id_reclamacao : reclamacaoId})
-    })) 
+    const validTagsIds : number[] = await tagIdExistValidator(tags)
+
+    await TagReclamacaoModel.bulkCreate(validTagsIds.map(id_tag => ({
+        id_tag,
+        id_reclamacao: reclamacaoId,
+    })));
 }
 
 export const updateTagReclamacoes = async (tags : number[], reclamacaoId : number) => {
     // Remove tags que estavam atreladas e não existem mais no array de ids passados
-    const olderTags = await getTagReclamacaoIdsList(reclamacaoId)
-    await Promise.all(olderTags.map(async tagId => {
-        if(!tags.includes(tagId))
-           await deleteTagReclamacoes({id_tag : tagId, id_reclamacao : reclamacaoId});
-    })) 
+    const oldTags = await getTagReclamacaoIdsList(reclamacaoId)
 
-    // Adiciona tags que não estavam atreladas a reclamação
-    await Promise.all(tags.map(async tagId => {
-        const existingRelation = await TagReclamacaoModel.findOne({
-            where : {
-                id_reclamacao : reclamacaoId,
-                id_tag : tagId
-            }
-        })
-        //Adiciona se nao existir em TagReclamacoes
-        if(!existingRelation){
-           await createTagReclamacoes({id_tag : tagId, id_reclamacao : reclamacaoId});
+    const tagsToRemove = oldTags.filter(oldTag => !tags.includes(oldTag))
+
+    await TagReclamacaoModel.destroy({
+        where : {
+            id_tag : {
+                [Op.in] : tagsToRemove
+            },
+            id_reclamacao : reclamacaoId
         }
-    })) 
+    })
+
+    //Tags que já estão associadas e não foram removidas
+    const existingTagsRelation = await TagReclamacaoModel.findAll({
+        where : {
+            id_reclamacao : reclamacaoId,
+            id_tag : {
+                [Op.in] : tags
+            }
+        }
+    })
+
+    
+    const existingTagsRelationIds = existingTagsRelation.map(tag => tag.id_tag)
+
+    //Tags com ids que não foram inseridos ainda na relação
+    const newTags = tags.filter(tagId => {
+        return !existingTagsRelationIds.includes(tagId)
+    })
+
+    const validNewTagsIds = await tagIdExistValidator(newTags)
+
+    await TagReclamacaoModel.bulkCreate(validNewTagsIds.map(tagId => ({
+        id_tag : tagId,
+        id_reclamacao : reclamacaoId
+    })));
 }
 
 export const deleteTagReclamacoes = async (tagReclamacao : ICreateTagReclamacao) => {
@@ -47,13 +69,28 @@ export const deleteTagReclamacoes = async (tagReclamacao : ICreateTagReclamacao)
    })
 }
 
-export const createTagReclamacoes = async (tagReclamacao : ICreateTagReclamacao) =>{
-    const existingTag = await TagModel.findByPk(tagReclamacao.id_tag);
-    if(existingTag){
-        await TagReclamacaoModel.create(tagReclamacao)
+export const tagIdExistValidator = async (tags : number[]) => {
+    //Verificando se as tags existem na tabela de tags
+    const existingTags = await TagModel.findAll({
+        where : {
+            id : {
+                [Op.in] : tags
+            }
+        }
+    })
+
+    const existingTagsIds = existingTags.map(tag => tag.id)
+
+    if(existingTags.length != tags.length){
+        const invalidTagsIds = tags.filter(tagId => {
+            return !existingTagsIds.includes(tagId)
+        })
+
+        throw new Error((invalidTagsIds.length == 1 
+            ? "A tag com ID: " 
+            : "As tags com ID: ") 
+            + invalidTagsIds.join(', ') + " não existem")
     }
-    else{
-        //Caso não exista a tag com o ID, retorna um erro para o try catch
-        throw new Error(`Tag com ID ${tagReclamacao.id_tag} não encontrada.`);
-    }
+
+    return existingTagsIds;
 }
