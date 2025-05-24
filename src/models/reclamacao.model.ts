@@ -22,8 +22,6 @@ export class ReclamacaoModel extends Model<IReclamacao, ReclamacaoCreationalAttr
   public complemento ?: string;
   public idUsuario!: number;
   public Usuario !: number;
-  public imagem?: string[];
-  public tags ?: number[];
 }
 
 ReclamacaoModel.init(
